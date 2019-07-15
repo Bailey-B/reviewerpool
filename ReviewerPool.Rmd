@@ -1,0 +1,81 @@
+---
+title: "SGO Willing AE/ Reviewer Pool"
+output: html_document
+---
+
+<style type="text/css">
+div.main-container {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+
+```{r data}
+# setwd("C:/Users/bbaumann/OneDrive - SAGE Publishing/Desktop/Reporting Projects/R/reviewerpool")
+# install.packages("tidyverse")
+# install.packages("DT")
+
+library(tidyverse)
+library(DT)
+
+#Import & Tidy Reviewer Data
+willingreviewers <- as_tibble(read.csv("willingreviewers.csv"))
+willingreviewers.AE <- filter(willingreviewers, Person.Attribute.Type == "Willing Article Editor")
+willingreviewers.reviewers <- filter(willingreviewers, Person.Attribute.Type == "Willing Reviewer")
+willingreviewers.AE$Willing.AE <- "True"
+willingreviewers.reviewers$Willing.Reviewer <- "True"
+willingreviewers.AE <- select(willingreviewers.AE,-c(Person.Attribute, Person.Attribute.Type))
+willingreviewers.reviewers <- select(willingreviewers.reviewers,-c(Person.Attribute, Person.Attribute.Type))
+willingreviewers <- full_join(willingreviewers.AE, willingreviewers.reviewers, by = c("Person.ID",
+                                                                                      "Salutation",
+                                                                                      "Full.Name",
+                                                                                      "Institution",
+                                                                                      "Country.Region",
+                                                                                      "Primary.E.mail.Address"))
+
+#Import & Tidy Reviewer Keywords
+userkeywords1 <- as_tibble(read.csv("userkeywords1.csv"))
+userkeywords2 <- as_tibble(read.csv("userkeywords2.csv"))
+userkeywords3 <- as_tibble(read.csv("userkeywords3.csv"))
+userkeywords4 <- as_tibble(read.csv("userkeywords4.csv"))
+userkeywords5 <- as_tibble(read.csv("userkeywords5.csv"))
+userkeywords6 <- as_tibble(read.csv("userkeywords6.csv"))
+userkeywords7 <- as_tibble(read.csv("userkeywords7.csv"))
+userkeywords8 <- as_tibble(read.csv("userkeywords8.csv"))
+
+userkeywords <- rbind(userkeywords1,
+                      userkeywords2,
+                      userkeywords3,
+                      userkeywords4,
+                      userkeywords5,
+                      userkeywords6,
+                      userkeywords7,
+                      userkeywords8)
+filteredkeywords <- semi_join(userkeywords, willingreviewers, by = "Person.ID")
+filteredkeywords <- group_by(filteredkeywords, Person.ID)
+filteredkeywords <- mutate(filteredkeywords, Keywords = paste0(Person.Attribute, sep =  ", ", collapse = "")) 
+filteredkeywords <- select(filteredkeywords,-c(Person.Attribute, Person.Attribute.Type))
+filteredkeywords <- distinct(filteredkeywords)
+
+reviewerpool <- full_join(willingreviewers, filteredkeywords, by = "Person.ID")
+reviewerpool <- reviewerpool[reviewerpool$Person.ID != "15140758",]
+
+```
+
+
+```{r table}
+datatable(reviewerpool, options = list(pageLength = 3679, lengthChange = FALSE), rownames = FALSE)
+
+```
+
