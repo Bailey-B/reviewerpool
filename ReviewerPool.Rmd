@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(DT)
 
-#Import & Tidy Reviewer Data
+# Import & Tidy Reviewer Data
 willingreviewers <- as_tibble(read.csv("willingreviewers.csv"))
 willingreviewers.AE <- filter(willingreviewers, Person.Attribute.Type == "Willing Article Editor")
 willingreviewers.reviewers <- filter(willingreviewers, Person.Attribute.Type == "Willing Reviewer")
@@ -44,7 +44,7 @@ willingreviewers <- full_join(willingreviewers.AE, willingreviewers.reviewers, b
                                                                                       "Country.Region",
                                                                                       "Primary.E.mail.Address"))
 
-#Import & Tidy Reviewer Keywords
+# Import & Tidy Reviewer Keywords
 userkeywords1 <- as_tibble(read.csv("userkeywords1.csv"))
 userkeywords2 <- as_tibble(read.csv("userkeywords2.csv"))
 userkeywords3 <- as_tibble(read.csv("userkeywords3.csv"))
@@ -69,13 +69,12 @@ filteredkeywords <- select(filteredkeywords,-c(Person.Attribute, Person.Attribut
 filteredkeywords <- distinct(filteredkeywords)
 
 reviewerpool <- full_join(willingreviewers, filteredkeywords, by = "Person.ID")
-reviewerpool <- reviewerpool[reviewerpool$Person.ID != "15140758",]
 
 ```
 
 
 ```{r table}
-datatable(reviewerpool, options = list(pageLength = 3679, lengthChange = FALSE), rownames = FALSE)
+datatable(reviewerpool, options = list(pageLength = nrow(reviewerpool), lengthChange = FALSE), rownames = FALSE)
 
 ```
 
