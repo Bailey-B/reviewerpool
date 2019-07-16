@@ -3,14 +3,16 @@ title: "SGO Willing AE/ Reviewer Pool"
 output: html_document
 ---
 
+# This adjusts the width and margins of the HTML output. 
+# https://stackoverflow.com/questions/34906002/increase-width-of-entire-html-rmarkdown-output
+
 <style type="text/css">
 div.main-container {
-  max-width: 1400px;
-  margin-left: auto;
+  max-width: 1200px;
+  margin-left: 0;
   margin-right: auto;
 }
 </style>
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -29,7 +31,7 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(DT)
 
-# Import & Tidy Reviewer Data
+# Import & Tidy Reviewer Data.
 willingreviewers <- as_tibble(read.csv("willingreviewers.csv"))
 willingreviewers.AE <- filter(willingreviewers, Person.Attribute.Type == "Willing Article Editor")
 willingreviewers.reviewers <- filter(willingreviewers, Person.Attribute.Type == "Willing Reviewer")
@@ -44,7 +46,7 @@ willingreviewers <- full_join(willingreviewers.AE, willingreviewers.reviewers, b
                                                                                       "Country.Region",
                                                                                       "Primary.E.mail.Address"))
 
-# Import & Tidy Reviewer Keywords
+# Import & Tidy Reviewer Keywords.
 userkeywords1 <- as_tibble(read.csv("userkeywords1.csv"))
 userkeywords2 <- as_tibble(read.csv("userkeywords2.csv"))
 userkeywords3 <- as_tibble(read.csv("userkeywords3.csv"))
